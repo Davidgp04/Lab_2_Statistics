@@ -31,11 +31,113 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 ## Bloque 1
 
 ### Problema 1
+
+Importe la base de datos tarjetacredit.csv. Determine la correspondiente tabla de probabilidades (marginales y conjuntas) considerando la población en la que cada individuo es clasificado según los criterios que aparecen a continuación. Grafique y elabore conclusiones (mínimo 3 por cada ́ıtem):
+
+
 ```{r}
-library(readr)
-credit_card<-read.csv('C:/Users/PC/OneDrive - Universidad EAFIT/Semestre 5/Stastistics/Lab 2/tarjetacredit.csv')
-View(credit_card)
+install.packages("flextable")
+install.packages("gglpot2")
+install.packages("kableExtra")
+install.packages("tidyr")
 ```
 
+```{r}
+credit_card <- read.csv("tarjetacredit.csv", sep = ",", header = TRUE)
+str(credit_card)
 
 
+library(flextable)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(tidyr)
+```
+# c. tipo de tarjeta (Azul, Plata, Oro, Platino) y perfil educativo del titular de la tarjeta (escuela secundaria, colegio, graduado universitario, doctorado, posgraduado, sin educación).
+```{r}
+probc <- data.frame(Tipo_de_tarjeta = credit_card$Card_Category, Perfil_educativo = credit_card$Education_Level)
+
+tabla1c <- table(probc)
+round(addmargins(tabla1c))
+round(tabla2c <- prop.table(tabla1c),2)
+round(addmargins(tabla2c))
+
+ggplot(probc, aes(x = Tipo_de_tarjeta, fill = Perfil_educativo)) +
+  geom_bar(position = "stack") +
+  labs(x = "Tipo de Tarjeta", y = "Frecuencias", fill = "Perfil Educativo") +
+  ggtitle("Diagrama de barras de Tipo de Tarjeta por Perfil Educativo") +
+  theme_bw(base_size = 12)
+
+ggplot(probc, aes(x = Tipo_de_tarjeta, fill = Perfil_educativo)) +
+  geom_bar(position = "dodge", colour = "black") +
+  labs(x = "Tipo de Tarjeta", y = "Frecuencias", fill = "Perfil Educativo") +
+  ggtitle("Diagrama de barras agrupadas de Tipo de Tarjeta por Perfil Educativo") +
+  theme_bw(base_size = 12)
+
+```
+
+### Conclusiones del punto C:
+
+1. Se ha identificado que la tarjeta de color azul goza de una aceptación considerable a través de un espectro amplio de niveles educativos, evidenciando una participación notable de individuos cuya formación académica varía desde la educación secundaria hasta niveles de posgrado.
+
+2. Se observa una tendencia menor hacia la posesión de tarjetas de crédito entre individuos con formación académica avanzada, tales como los poseedores de títulos de posgrado o doctorado. Estos grupos demuestran una probabilidad significativamente reducida de asociación con cualquier tipo de tarjeta de crédito.
+
+3. La representación disminuida en las categorías de tarjetas doradas, platino y plata sugiere la existencia de una relación entre el nivel educativo de los individuos y su acceso o preferencia por tarjetas de crédito de categoría superior, las cuales ofrecen mayores beneficios y, consecuentemente, incurren en costos más elevados.
+
+
+# d. actividad del cliente con respecto a la cuenta (activa o cerrada) y el género (F  ́o M).
+```{r}
+probd<-data.frame(Estado_tarjeta=credit_card$Attrition_Flag, Género=credit_card$Gender)
+library(ggplot2)
+(tabla1d<-table(probd))
+round(addmargins(tabla1d))
+round(tabla2d <- prop.table(tabla1d),2)
+round(addmargins(tabla2d),2)
+
+ggplot(probd, aes(Estado_tarjeta, fill=Género ))+
+  geom_bar()+
+  labs(x= "Actividad de la tarjeta", y="Frecuencias", fill="Género")+
+  ylim(c(0,8500))+
+  #xlim(c(0,300))+
+  ggtitle("Diagrama de barras de Actividad del Cliente y el Género")+
+  theme_bw(base_size = 12)
+
+ggplot(probd, aes(Estado_tarjeta, fill=Género))+
+  geom_bar(position="dodge", colour="black")+
+  labs(x = "Actividad de la tarjeta", y = "Frecuencias", fill="Género")+
+  ylim(0,4500)+
+  ggtitle("Diagrama de barras agrupadas de Actividad del Cliente y el Género")
+
+```
+
+### Conclusiones punto D:
+
+1. Distribución Equitativa de la Tarjeta Azul: La composición demográfica de los titulares de la Tarjeta Azul demuestra un balance proporcional entre géneros dentro de la clientela actual, con una representación femenina del 44% y una masculina del 40%, lo cual evidencia una asignación equitativa de los productos bancarios entre mujeres y hombres.
+
+2. Preponderancia Femenina en la Clientela General: El análisis de la totalidad de clientes revela que las mujeres constituyen el 53% del conjunto, en comparación con el 47% de representación masculina, sugiriendo una predominancia femenina en la base de clientes del banco en su totalidad.
+
+3. Correlación Potencial entre Género y Actividad de Cuentas: Se postula la existencia de una posible correlación entre la mayor presencia de clientas femeninas en comparación con los clientes masculinos y el hecho de que las mujeres no solo predominan en el número total de cuentas, sino también lideran tanto en las categorías de cuentas activas como inactivas. Esta circunstancia podría ser atribuida a otros factores subyacentes aún no identificados.
+
+
+## Problema 2. 
+Teniendo en cuenta la información de la tabla d. realizada en el punto anterior, complete:
+
+El gerente del banco recolectó datos sobre 10127 de sus clientes. De los 4769 hombres, 4072 tienen tarjetas de crédito activas  697  de los hombres tienen la cuenta cerrada (inactiva), mientras que 930 de las mujeres tienen la cuenta inactiva. El gerente del banco desea determinar la probabilidad de que un cliente seleccionado al azar sea:
+
+# * Una mujer con tarjeta de crédito (cuenta) activa.
+R// la Probabilidad es de 44%
+
+
+# * Una mujer con tarjeta de crédito inactiva.
+R// La probabilidad es de 9%
+
+
+# * Un hombre sin tarjeta activa.
+R// La probabilidad es de 7%
+
+
+# * Un hombre con tarjeta activa.
+R// La probabilidad es de 40%
+
+Conclusión: Mediante el empleo de tablas de frecuencias cruzadas, así como de tablas que ilustran probabilidades conjuntas y condicionales, es factible brindar claridad sobre las diversas probabilidades de seleccionar aleatoriamente a un individuo cuyas características distintivas incluyen el género —ya sea femenino o masculino— y la posesión de determinados atributos, tales como actividad bancaria actual, nivel de cualificación profesional, estado civil o la tenencia de variados tipos de tarjetas de crédito dentro de los segmentos más vigorosos del mercado de crédito.
