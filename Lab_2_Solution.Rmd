@@ -1,6 +1,8 @@
 ---
 title: "Lab_2_Solution"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 date: "2024-02-29"
 ---
 
@@ -30,27 +32,86 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 
 ## Bloque 1
 
-### Ejecutar antes del punto 1
-```{r}
-install.packages("flextable")
-install.packages("gglpot2")
-install.packages("kableExtra")
-install.packages("tidyr")
-install.packages("ggplot2")
-library(flextable)
-library(dplyr)
-library(ggplot2)
-library(knitr)
-library(kableExtra)
-library(tidyr)
-```
-
 ### Problema 1
+
 ```{r}
 library(readr)
 credit_card<-read.csv('C:/Users/PC/OneDrive - Universidad EAFIT/Semestre 5/Stastistics/Lab 2/tarjetacredit.csv')
 View(credit_card)
+
+datos<-credit_card
 ```
+
+#### a
+
+```{r}
+probabilidad_marginal_genero <- table(datos$Gender) / length(datos$Gender)
+
+probabilidad_marginal_tarjeta <- table(datos$Card_Category) / length(datos$Card_Category)
+
+tabla_conjunta_genero_tarjeta <- table(datos$Gender, datos$Card_Category)
+total_observaciones <- sum(tabla_conjunta_genero_tarjeta)
+probabilidad_conjunta_genero_tarjeta <- tabla_conjunta_genero_tarjeta / total_observaciones
+
+print(probabilidad_marginal_genero)
+print(probabilidad_marginal_tarjeta)
+print(probabilidad_conjunta_genero_tarjeta)
+
+# Graficos 
+colores_genero <- c("blue", "purple")
+barplot(probabilidad_marginal_genero, main = "Probabilidad marginal por genero", xlab = "Genero", ylab = "Probabilidad")
+barplot(probabilidad_marginal_tarjeta, main = "Probabilidad marginal por tipo de tarjeta", xlab = "Tipo de Tarjeta", ylab = "Probabilidad")
+barplot(probabilidad_conjunta_genero_tarjeta, 
+        beside = TRUE, 
+        main = "Probabilidad Conjunta de Género y Tipo de Tarjeta", 
+        xlab = "Combinación (Género-Tipo de Tarjeta)", 
+        ylab = "Probabilidad",
+        col = colores_genero,
+        legend = rownames(probabilidad_conjunta_genero_tarjeta))
+
+```
+
+-   Los datos muestran que alrededor del 52.9% de los titulares de tarjetas de crédito son mujeres, mientras que aproximadamente el 47.1% son hombres.
+
+-   La tarjeta "Blue" es la más popular entre los titulares, representando aproximadamente el 93.2% de las tarjetas en circulación, seguida de "Silver" con alrededor del 5.5%. Las tarjetas "Gold" y "Platinum" son menos comunes, con alrededor del 1.1% y 0.2% respectivamente.
+
+-   Al observar la probabilidad conjunta de género y tipo de tarjeta, se notan algunas diferencias en las preferencias entre hombres y mujeres. Por ejemplo, las mujeres muestran una mayor propensión a poseer tarjetas "Blue" en comparación con los hombres (aproximadamente 50.4% contra 42.8%).
+
+#### b
+
+```{r}
+
+probabilidad_marginal_actividad <- table(datos$Attrition_Flag) / length(datos$Attrition_Flag)
+
+probabilidad_marginal_estado_civil <- table(datos$Marital_Status) / length(datos$Marital_Status)
+
+tabla_conjunta_actividad_estado_civil <- table(datos$Attrition_Flag, datos$Marital_Status)
+probabilidad_conjunta_actividad_estado_civil <- tabla_conjunta_actividad_estado_civil / length(datos$Attrition_Flag)
+
+
+print(probabilidad_marginal_actividad)
+print(probabilidad_marginal_estado_civil)
+print(probabilidad_conjunta_actividad_estado_civil)
+
+#Graficos'
+barplot(probabilidad_marginal_actividad, main = "Probabilidad Marginal de Actividad de la Cuenta", xlab = "Actividad de la Cuenta", ylab = "Probabilidad")
+barplot(probabilidad_marginal_estado_civil, main = "Probabilidad Marginal de Estado Civil", xlab = "Estado Civil", ylab = "Probabilidad")
+
+colores_actividad <- c("blue", "red")
+barplot(as.matrix(probabilidad_conjunta_actividad_estado_civil), beside = TRUE, 
+        main = "Probabilidad Conjunta de Actividad de la Cuenta y Estado Civil", 
+        xlab = "Combinación (Actividad de la Cuenta - Estado Civil)", 
+        ylab = "Probabilidad",
+        col = colores_actividad,
+        legend = rownames(probabilidad_conjunta_actividad_estado_civil))
+```
+
+-   Aproximadamente el 16.1% de los clientes han cerrado su cuenta (Attrited Customer), mientras que el 83.9% tienen cuentas existentes (Existing Customer). Esto sugiere que la mayoría de los clientes mantienen una relación continua con el banco.
+
+- La categoría "Unknown"  representa una proporción relativamente pequeña de los clientes en el conjunto de datos, es importante tener en cuenta que aún así existe un porcentaje de clientes con estado civil desconocido (aproximadamente 7.40%). Esto podría indicar una falta de información sobre algunos clientes en la base de datos.
+
+-   La mayoría de los clientes tienen un estado civil de casado, seguido de soltero y divorciado. Solo una pequeña proporción tiene un estado civil desconocido. Esto indica que el banco atiende a una amplia gama de clientes con diferentes estados civiles.
+
 #### Parte c
 
 ```{r}
@@ -75,18 +136,110 @@ ggplot(probc, aes(x = Tipo_de_tarjeta, fill = Perfil_educativo)) +
 
 ```
 
-##### Conclusiones del punto C:
-
 1.  Se ha identificado que la tarjeta de color azul goza de una aceptación considerable a través de un espectro amplio de niveles educativos, evidenciando una participación notable de individuos cuya formación académica varía desde la educación secundaria hasta niveles de posgrado.
 
 2.  Se observa una tendencia menor hacia la posesión de tarjetas de crédito entre individuos con formación académica avanzada, tales como los poseedores de títulos de posgrado o doctorado. Estos grupos demuestran una probabilidad significativamente reducida de asociación con cualquier tipo de tarjeta de crédito.
 
 3.  La representación disminuida en las categorías de tarjetas doradas, platino y plata sugiere la existencia de una relación entre el nivel educativo de los individuos y su acceso o preferencia por tarjetas de crédito de categoría superior, las cuales ofrecen mayores beneficios y, consecuentemente, incurren en costos más elevados.
 
-## Bloque 2
+#### Parte d
 
+```{r}
+probd<-data.frame(Estado_tarjeta=credit_card$Attrition_Flag, Género=credit_card$Gender)
+library(ggplot2)
+(tabla1d<-table(probd))
+round(addmargins(tabla1d))
+round(tabla2d <- prop.table(tabla1d),2)
+round(addmargins(tabla2d),2)
+
+ggplot(probd, aes(Estado_tarjeta, fill=Género ))+
+  geom_bar()+
+  labs(x= "Actividad de la tarjeta", y="Frecuencias", fill="Género")+
+  ylim(c(0,8500))+
+  #xlim(c(0,300))+
+  ggtitle("Diagrama de barras de Actividad del Cliente y el Género")+
+  theme_bw(base_size = 12)
+
+ggplot(probd, aes(Estado_tarjeta, fill=Género))+
+  geom_bar(position="dodge", colour="black")+
+  labs(x = "Actividad de la tarjeta", y = "Frecuencias", fill="Género")+
+  ylim(0,4500)+
+  ggtitle("Diagrama de barras agrupadas de Actividad del Cliente y el Género")
+```
+1. Preponderancia Femenina en la Clientela General: El análisis de la totalidad de clientes revela que las mujeres constituyen el 53% del conjunto, en comparación con el 47% de representación masculina, sugiriendo una predominancia femenina en la base de clientes del banco en su totalidad.
+
+2. El porcentaje de personas que desisten del uso de las tarjetas de crédito es muy equitativo, puede verse ya que las relaciones M-F en Attrited y en Existing es muy similar.
+
+3. El porcentaje de hombres que desisten de las cuentas bancarias es relativamente menor al de las mujeres, esperaría verse una brecha más pequeña en las decesiones, pero no es el caso, lo cual demuestra el punto.
+
+### Problema 2
+El gerente del banco recolectó datos sobre 10127 de sus clientes. De los 4769 hombres, 4072 tienen tarjetas de crédito activas  697  de los hombres tienen la cuenta cerrada (inactiva), mientras que 930 de las mujeres tienen la cuenta inactiva. El gerente del banco desea determinar la probabilidad de que un cliente seleccionado al azar sea:
+
+Una mujer con tarjeta de crédito (cuenta) activa.
+R// la Probabilidad es de 44%
+
+
+Una mujer con tarjeta de crédito inactiva.
+R// La probabilidad es de 9%
+
+
+Un hombre sin tarjeta activa.
+R// La probabilidad es de 7%
+
+
+Un hombre con tarjeta activa.
+R// La probabilidad es de 40%
+
+### problema 3
+
+```{r}
+
+datos$Grupo_Edad<-ifelse(datos$Customer_Age<40, "Menos de 40 años","40 años o más")
+(table_3a<-table(datos$Card_Category, datos$Grupo_Edad))
+(table_3a<-addmargins(table_3a))
+total<-table_3a[5,3];total
+```
+
+
+-   Probabilidad de tener 40 años o más y tarjeta de crédito azul
+
+```{r}
+p_1<-table_3a[1]/total;p_1
+
+```
+-   Probabilidad de tener menos de 40 años
+
+
+```{r}
+p_2<-table_3a[5,2]/total;p_2
+
+```
+-   Probabilidad de tener tarjeta de crédito plata dado que tiene 40 años o más
+
+```{r}
+p_3<-table_3a[4]/table_3a[5];p_3
+```
+
+-   Probabilidad de ser menor de 40 años si tiene tarjeta tipo oro
+
+```{r}
+p_4<-table_3a[2,2]/table_3a[2,3];p_4
+```
+
+-   Probabilidad de tener tarjeta oro o azul dado que es una persona menor de 40 años
+
+```{r}
+p_5<-(table_3a[2,2]+table_3a[1,2])/table_3a[5,2];p_5
+```
+
+-   Probabilidad de no tener tarjeta platino dado que es una persona de 40 años o más
+
+```{r}
+p_6<-1-table_3a[3,1]/table_3a[5,1];p_6<-p_6;p_6
+```
 ### Problema 4
-``` {r}
+
+```{r}
 table_4a<-table(credit_card$Marital_Status,credit_card$Income_Category)
 table_4b<-addmargins(table_4a)
 frequencies_table<-matrix(nrow=nrow(table_4a),ncol=ncol(table_4a))
@@ -99,7 +252,8 @@ for (i in 1:nrow(table_4a)){
 frequencies_table
 
 ```
-``` {r}
+
+```{r}
 
 divorced<-barplot(frequencies_table[1,])
 married<-barplot(frequencies_table[2,])
@@ -112,7 +266,7 @@ Como puede verse en los gráficos, y más claramente en la tabla "frequencies_ta
 
 ### Problema 5
 
-``` {r}
+```{r}
 tabla_contingencia <- table(credit_card$Education_Level, credit_card$Income_Category)
 print("Tabla de Contingencia:")
 table_5<-addmargins(tabla_contingencia)
@@ -134,63 +288,39 @@ prob_secundaria_dado_ingresos_menos_120K <- table_5["High School",1] / table_5["
 print(paste("Probabilidad de que un cliente con ingresos inferiores a $120,000 provenga de la escuela secundaria:", round(prob_secundaria_dado_ingresos_menos_120K*100,2),"%"))
 ```
 
-## Bloque 2
-
 ### Problema 6
 
+\$\$
 
-$$
+P(H) = 0.15  (Estudiantes  hombres) \\ P(M) = 1 - P(H) = 0.85  (Estudiantes  mujeres) \\ P(F\|H) = 0.70  (Probabilidad  hombre  fumador) \\ P(F\|M) = 0.20  (Probabilidad  mujer  fumer) \\
 
-P(H) = 0.15 \ (Estudiantes \ hombres) \\
-P(M) = 1 - P(H) = 0.85 \ (Estudiantes \ mujeres) \\
-P(F|H) = 0.70 \ (Probabilidad \ hombre \ fumador) \\
-P(F|M) = 0.20 \ (Probabilidad \ mujer \ fumer) \\
+P(F) = P(F\|H) \cdot P(H) + P(F\|M) \cdot P(M)  (Probilidad  de  que  alguien  fume ) \\
 
-P(F) = P(F|H) \cdot P(H) + P(F|M) \cdot P(M) \ (Probilidad \ de \ que \ alguien \ fume ) \\
+P(A) = \sum\_{i=1}\^{n} P(A\|B_i) \cdot P(B_i) \\
 
-P(A) = \sum_{i=1}^{n} P(A|B_i) \cdot P(B_i) \\ 
+La  probabilidad  de  que  una  persona  fume  es   de\
 
-La \ probabilidad \ de \ que \ una \ persona \ fume \ es \  de \
+P(F) = 0.70 \cdot 0.15 + 0.20 \cdot 0.85 = 27.5 % \\
 
-P(F) = 0.70 \cdot 0.15 + 0.20 \cdot 0.85 = 27.5 \% \\ 
-
-$$
-
+\$\$
 
 ### Problema 7
 
+\$\$
 
-$$
+P(B1) = 0.60 \quad (\text{Probabilidad de recibir un producto de B1}) \\ P(B2) = 0.25 \quad (\text{Probabilidad de recibir un producto de B2}) \\ P(B3) = 0.15 \quad (\text{Probabilidad de recibir un producto de B3}) \\ P(C\|B1) = 0.90 \quad (\text{Probabilidad de que un producto de B1 cumpla con las especificaciones}) \\ P(C\|B2) = 0.85 \quad (\text{Probabilidad de que un producto de B2 cumpla con las especificaciones}) \\ P(C\|B3) = 0.60 \quad (\text{Probabilidad de que un producto de B3 cumpla con las especificaciones}) \\
 
-P(B1) = 0.60 \quad (\text{Probabilidad de recibir un producto de B1}) \\
-P(B2) = 0.25 \quad (\text{Probabilidad de recibir un producto de B2}) \\
-P(B3) = 0.15 \quad (\text{Probabilidad de recibir un producto de B3}) \\
-P(C|B1) = 0.90 \quad (\text{Probabilidad de que un producto de B1 cumpla con las especificaciones}) \\
-P(C|B2) = 0.85 \quad (\text{Probabilidad de que un producto de B2 cumpla con las especificaciones}) \\
-P(C|B3) = 0.60 \quad (\text{Probabilidad de que un producto de B3 cumpla con las especificaciones}) \\ 
+Para  calcular  la  probabilidad  de  que  algún  producto  recibido  cumpla  con  las  especificaciones  (  (P(C)  )): \\
 
-Para \ calcular \ la \ probabilidad \ de \ que \ algún \ producto \ recibido \ cumpla \ con \ las  \ especificaciones \ ( \ (P(C) \ )): \\
+P(C) = \sum\_{i=1}\^{n} P(C\|B_i) \cdot P(B_i) \\
 
-P(C) = \sum_{i=1}^{n} P(C|B_i) \cdot P(B_i) \\ 
+P(C) = P(C\|B1) \cdot P(B1) + P(C\|B2) \cdot P(B2) + P(C\|B3) \cdot P(B3) \\ = (0.90 \times 0.60) + (0.85 \times 0.25) + (0.60 \times 0.15) \\ = 0.54 + 0.2125 + 0.09 \\ = 0.8425 \\
 
+Por  lo  tanto,  por  Bayes: \\
 
-P(C) = P(C|B1) \cdot P(B1) + P(C|B2) \cdot P(B2) + P(C|B3) \cdot P(B3) \\
-= (0.90 \times 0.60) + (0.85 \times 0.25) + (0.60 \times 0.15) \\
-= 0.54 + 0.2125 + 0.09 \\
-= 0.8425 \\
+P(B2\|C) = \frac{P(C|B2) \cdot P(B2)}{P(C)} \\ = \frac{0.85 \times 0.25}{0.8425} \\ = \frac{0.2125}{0.8425} \\ \approx 0.2522 = 25.22 %
 
-Por \ lo \ tanto, \ por \ Bayes: \\
-
-
-P(B2|C) = \frac{P(C|B2) \cdot P(B2)}{P(C)} \\
-= \frac{0.85 \times 0.25}{0.8425} \\
-= \frac{0.2125}{0.8425} \\
-\approx 0.2522
-= 25.22 \%
-
-
-
-$$
+\$\$
 
 
 ### Problema 8
@@ -232,4 +362,3 @@ Por lo tanto, la probabilidad de que un individuo sea titulado superior, sabiend
  
 
 $$
-
