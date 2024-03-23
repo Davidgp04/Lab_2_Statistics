@@ -51,6 +51,37 @@ library(readr)
 credit_card<-read.csv('C:/Users/PC/OneDrive - Universidad EAFIT/Semestre 5/Stastistics/Lab 2/tarjetacredit.csv')
 View(credit_card)
 ```
+#### Parte c
+
+```{r}
+probc <- data.frame(Tipo_de_tarjeta = credit_card$Card_Category, Perfil_educativo = credit_card$Education_Level)
+
+tabla1c <- table(probc)
+round(addmargins(tabla1c))
+round(tabla2c <- prop.table(tabla1c),2)
+round(addmargins(tabla2c))
+
+ggplot(probc, aes(x = Tipo_de_tarjeta, fill = Perfil_educativo)) +
+  geom_bar(position = "stack") +
+  labs(x = "Tipo de Tarjeta", y = "Frecuencias", fill = "Perfil Educativo") +
+  ggtitle("Diagrama de barras de Tipo de Tarjeta por Perfil Educativo") +
+  theme_bw(base_size = 12)
+
+ggplot(probc, aes(x = Tipo_de_tarjeta, fill = Perfil_educativo)) +
+  geom_bar(position = "dodge", colour = "black") +
+  labs(x = "Tipo de Tarjeta", y = "Frecuencias", fill = "Perfil Educativo") +
+  ggtitle("Diagrama de barras agrupadas de Tipo de Tarjeta por Perfil Educativo") +
+  theme_bw(base_size = 12)
+
+```
+
+##### Conclusiones del punto C:
+
+1.  Se ha identificado que la tarjeta de color azul goza de una aceptación considerable a través de un espectro amplio de niveles educativos, evidenciando una participación notable de individuos cuya formación académica varía desde la educación secundaria hasta niveles de posgrado.
+
+2.  Se observa una tendencia menor hacia la posesión de tarjetas de crédito entre individuos con formación académica avanzada, tales como los poseedores de títulos de posgrado o doctorado. Estos grupos demuestran una probabilidad significativamente reducida de asociación con cualquier tipo de tarjeta de crédito.
+
+3.  La representación disminuida en las categorías de tarjetas doradas, platino y plata sugiere la existencia de una relación entre el nivel educativo de los individuos y su acceso o preferencia por tarjetas de crédito de categoría superior, las cuales ofrecen mayores beneficios y, consecuentemente, incurren en costos más elevados.
 
 ## Bloque 2
 
